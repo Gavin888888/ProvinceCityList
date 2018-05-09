@@ -1,0 +1,10 @@
+inhibit_all_warnings!
+
+target 'ProvinceAndCity_Example' do
+  pod 'ProvinceAndCity', :path => '../'
+#  pod 'BMKLocationKit'
+  target 'ProvinceAndCity_Tests' do
+    inherit! :search_paths
+
+  end
+end

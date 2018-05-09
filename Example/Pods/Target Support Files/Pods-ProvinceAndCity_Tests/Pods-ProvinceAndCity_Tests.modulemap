@@ -1,0 +1,6 @@
+framework module Pods_ProvinceAndCity_Tests {
+  umbrella header "Pods-ProvinceAndCity_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

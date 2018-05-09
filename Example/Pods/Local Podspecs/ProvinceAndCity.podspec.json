@@ -1,0 +1,28 @@
+{
+  "name": "ProvinceAndCity",
+  "version": "0.1.0",
+  "summary": "A short description of ProvinceAndCity.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/876637125@qq.com/ProvinceAndCity",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "876637125@qq.com": "876637125@qq.com"
+  },
+  "source": {
+    "git": "https://github.com/876637125@qq.com/ProvinceAndCity.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "ProvinceAndCity/Classes/**/*.{h,m}",
+  "resources": "ProvinceAndCity/classes/*.{xib,bundle,plist}",
+  "dependencies": {
+    "BMKLocationKit": [
+
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+PODS:
+  - BMKLocationKit (1.1.0)
+  - ProvinceAndCity (0.1.0):
+    - BMKLocationKit
+
+DEPENDENCIES:
+  - ProvinceAndCity (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - BMKLocationKit
+
+EXTERNAL SOURCES:
+  ProvinceAndCity:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  BMKLocationKit: 1dae7e092b1f8bf808370bbbcbd23bc4445108d9
+  ProvinceAndCity: fe0496e59723be06bbddf8eed86918b25b91b56e
+
+PODFILE CHECKSUM: 7367a438da3beb1b77082a4810eb54f5f8b9213c
+
+COCOAPODS: 1.5.0
