@@ -18,20 +18,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self leftBarButton];
     self.btn = [UIButton buttonWithType:UIButtonTypeCustom];
     _btn.backgroundColor = [UIColor redColor];
     [_btn addTarget:self action:@selector(selectorCityBtnClick) forControlEvents:UIControlEventTouchUpInside];
     _btn.frame = CGRectMake(100, 100, 200, 100);
     [self.view addSubview:_btn];
+    
+    [self leftBarButton];
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
 }
 /**
  省市列表
  */
 -(void)leftBarButton{
-    [[PCManager shareProvinceCityManager] getLocationWithResult:^(NSString *city) {
+    //开始定位
+    PCManager *manger = [PCManager shareProvinceCityManager];
+    manger.showViewController = self;
+    [manger getLocationWithResult:^(NSString *city) {
         [_btn setTitle:city forState:UIControlStateNormal];
     }];
+    manger.changeBlock = ^(NSString *newCity) {
+        NSLog(@"城市已切换到：%@",newCity);
+        [_btn setTitle:newCity forState:UIControlStateNormal];
+    };
 }
 -(void)selectorCityBtnClick
 {

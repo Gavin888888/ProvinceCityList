@@ -33,6 +33,8 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.navigationController.navigationBar.translucent = NO;
     self.title = @"选择地区";
     if (_pcmanager.selectedCity) {
         _selectedCityLabel.text = [NSString stringWithFormat:@"当前城市：%@",_pcmanager.selectedCity];
@@ -46,11 +48,28 @@
     [self loadProvinceCity];
 }
 - (IBAction)restartLocation:(id)sender {
-    [_pcmanager getLocationWithResult:^(NSString *city) {
-        if (city) {
-            _selectedCityLabel.text = [NSString stringWithFormat:@"当前城市：%@",city];
-        }
-    }];
+    if (_pcmanager.AuthorizationStatus == 2) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"没有获取坐标的权限，是否去设置？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *submitAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:appSettings];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }];
+        [alertController addAction:submitAction];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:^{
+            
+        }];
+    }else
+    {
+        [_pcmanager getLocationWithResult:^(NSString *city) {
+            if (city) {
+                _selectedCityLabel.text = [NSString stringWithFormat:@"当前城市：%@",city];
+            }
+        }];
+    }
 }
 -(void)loadProvinceCity
 {

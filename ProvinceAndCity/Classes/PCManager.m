@@ -11,6 +11,7 @@
 #import <BMKLocationKit/BMKLocationAuth.h>
 @interface PCManager ()<BMKLocationManagerDelegate,BMKLocationAuthDelegate>
 @property(nonatomic,strong) BMKLocationManager *locationManager;
+@property(nonatomic,strong) NSString *changeNewCity;//改变后的新城市
 @end
 @implementation PCManager
 +(instancetype)shareProvinceCityManager
@@ -19,9 +20,21 @@
     static PCManager *manager;
     dispatch_once(&onceToken, ^{
         manager = [[PCManager alloc] init];
-        [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"gjlnrQUTUawHT6GAkrpKO50z2ElPem6I" authDelegate:self];
-
+        //监听UIApplication的UIApplicationWillEnterForegroundNotification通知
+        [[NSNotificationCenter defaultCenter]addObserver:manager  selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification
+         
+                                                  object:[UIApplication sharedApplication]];
     });
+    return manager;
+}
+-(void)applicationWillEnterForeground
+{
+    [self getLocationWithResult:nil];
+}
++(instancetype)shareProvinceCityManagerWithLocationAppKey:(NSString *)aKey
+{
+    PCManager *manager = [PCManager shareProvinceCityManager];
+    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:aKey authDelegate:self];
     return manager;
 }
 -(void)getLocationWithResult:(LocationResult)aLocationResult
@@ -48,8 +61,31 @@
     _locationManager.reGeocodeTimeout = 10;
     //开始定位
     [_locationManager requestLocationWithReGeocode:YES withNetworkState:YES completionBlock:^(BMKLocation * _Nullable location, BMKLocationNetworkState state, NSError * _Nullable error) {
-        _selectedCity = location.rgcData.city;
-        aLocationResult(_selectedCity);
+        if (state == BMKLocationNetworkStateUnknown) {
+            _selectedCity = @"定位失败";
+            return ;
+        }
+        if (![_selectedCity isEqualToString:location.rgcData.city]&&_selectedCity != nil) {
+            NSString *title = [NSString stringWithFormat:@"所在城市已切换到%@，是否切换？",location.rgcData.city];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:title preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *fixAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                _selectedCity = location.rgcData.city;
+                if (_changeBlock) {
+                    _changeBlock(_selectedCity);
+                }
+            }];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                _selectedCity = location.rgcData.city;
+       
+            }];
+            [alertController addAction:fixAction];
+            [alertController addAction:cancelAction];
+            [_showViewController presentViewController:alertController animated:YES completion:nil];
+        }else
+        {
+            _selectedCity = location.rgcData.city;
+            aLocationResult(_selectedCity);
+        }
     }];
 }
 #pragma mark - BMKLocationAuthDelegate
@@ -69,23 +105,26 @@
  */
 - (void)BMKLocationManager:(BMKLocationManager * _Nonnull)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    
+    _AuthorizationStatus = status;
 }
+
 -(void)getProvinceCityListSuccessBlock:(SuccessLoadHandle)successBlock failBlock:(Failure)failBlock
 {
-    NSString *url_str = @"http://service3.99melove.cn/YSJDoctor-service/service/rest/app.Parameter/collection/getCity";
+    NSString *url_str = Province_City_URL;
     NSURL *url = [NSURL URLWithString:url_str];
     NSURLRequest *request =[NSURLRequest requestWithURL:url];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingMutableLeaves) error:nil];
-        if (dict) {
-            successBlock(dict);
-        }else{
-            failBlock(nil);
+        if (data) {
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingMutableLeaves) error:nil];
+            if (dict) {
+                successBlock(dict);
+            }else{
+                failBlock(nil);
+            }
         }
     }];
     [sessionDataTask resume];
 }
+
 @end

@@ -7,11 +7,18 @@
 //
 
 #import "LIAppDelegate.h"
-
+#import "LISecondViewController.h"
+#import <PCManager.h>
 @implementation LIAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    LISecondViewController *secondVc = [[LISecondViewController alloc] init];
+    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:secondVc];
+    self.window.rootViewController = navi;
+    [self.window makeKeyAndVisible];
+    [PCManager shareProvinceCityManagerWithLocationAppKey:@"gjlnrQUTUawHT6GAkrpKO50z2ElPem6I"];
     return YES;
 }
 
