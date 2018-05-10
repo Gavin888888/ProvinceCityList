@@ -27,6 +27,7 @@ pod 'ProvinceAndCity'
 ## License
 
 ProvinceAndCity is available under the MIT license. See the LICENSE file for more info.
+![snapshot](https://raw.githubusercontent.com/Gavin888888/ProvinceCityList/master/snapshot/Simulator%20Screen%20Shot%20-%20iPhone%208%20Plus%20-%202018-05-10%20at%2011.18.07.png)
 
 
 
