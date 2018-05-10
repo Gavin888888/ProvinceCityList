@@ -84,7 +84,9 @@
         }else
         {
             _selectedCity = location.rgcData.city;
-            aLocationResult(_selectedCity);
+            if (aLocationResult) {
+                aLocationResult(_selectedCity);
+            }
         }
     }];
 }

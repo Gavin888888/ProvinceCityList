@@ -40,6 +40,7 @@
     [manger getLocationWithResult:^(NSString *city) {
         [_btn setTitle:city forState:UIControlStateNormal];
     }];
+    //切换城市
     manger.changeBlock = ^(NSString *newCity) {
         NSLog(@"城市已切换到：%@",newCity);
         [_btn setTitle:newCity forState:UIControlStateNormal];
